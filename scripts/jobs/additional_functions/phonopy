@@ -7,9 +7,10 @@ conda activate phonopy
 
 # Prepend Anaconda's own lib directory so it uses the right libstdc++
 export LD_LIBRARY_PATH="/work/10117/jerging27/ls6/anaconda3/lib:$LD_LIBRARY_PATH"
+CURRENT_DIR="$PWD"
 for phonons in *phonons/ ; do
-        echo $phonons
-        cd $phonons
+        echo "$phonons"
+        cd "$phonons"
 
         phonopy -d --dim 1 1 1
 

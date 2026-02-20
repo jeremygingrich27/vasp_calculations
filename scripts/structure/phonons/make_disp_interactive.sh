@@ -1,63 +1,47 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# make_disp_interactive.sh
+# Interactively runs make_disp_line_arg.sh in every POSCAR*/ subdirectory.
+#
+# Usage:
+#   bash make_disp_interactive.sh
+#
+# Run from the directory that contains POSCAR*/ subdirectories.
+# For each subdirectory the script enters it, generates phonopy displacements,
+# and optionally copies extra files alongside the defaults (INCAR, KPOINTS, POTCAR).
 
-phonopy -d --dim 1 1 1 --pa auto
+set -euo pipefail
 
-# Default files to copy (INCAR, KPOINTS, POTCAR)
-FILES_TO_COPY=("INCAR" "KPOINTS" "POTCAR")
+SCRIPT_DIR="$(dirname "${BASH_SOURCE[0]}")"
 
-# Parse command-line arguments for extra files
-EXTRA_FILES=()
-while [[ $# -gt 0 ]]; do
-    case "$1" in
-        --cp)
-            shift
-            while [[ $# -gt 0 && ! "$1" == --* ]]; do
-                EXTRA_FILES+=("$1")
-                shift
-            done
-            ;;
-        *)
-            echo "Unknown option: $1"
-            exit 1
-            ;;
-    esac
-done
+# Find POSCAR* subdirectories
+mapfile -t dirs < <(find . -maxdepth 1 -type d -name "POSCAR*" | sort)
 
-# Combine default and extra files
-FILES_TO_COPY+=("${EXTRA_FILES[@]}")
-
-echo "Files to copy to each directory: ${FILES_TO_COPY[*]}"
-
-# Find all POSCAR-* files
-POSCAR_FILES=(POSCAR-*)
-if [[ ${#POSCAR_FILES[@]} -eq 0 ]]; then
-    echo "No POSCAR-* files found in current directory."
-    exit 0
+if [[ ${#dirs[@]} -eq 0 ]]; then
+    echo "No POSCAR* directories found in current directory."
+    exit 1
 fi
 
-echo "Found ${#POSCAR_FILES[@]} POSCAR-* files"
+echo "Found ${#dirs[@]} POSCAR* directories:"
+printf '  %s\n' "${dirs[@]}"
+echo "----------------------------------------"
 
-# Process each POSCAR file
-for poscar in "${POSCAR_FILES[@]}"; do
-    # Extract directory name (e.g., "001" from "POSCAR-001")
-    dir_name="${poscar#POSCAR-}"
-    
-    # Create directory if it doesn't exist
-    if [[ ! -d "$dir_name" ]]; then
-        mkdir -v "$dir_name"
-    fi
-    
-    # Copy POSCAR file (renamed to just POSCAR in the new directory)
-    mv -v "$poscar" "$dir_name/POSCAR"
-    
-    # Copy other files
-    for file in "${FILES_TO_COPY[@]}"; do
-        if [[ -f "$file" ]]; then
-            cp -v "$file" "$dir_name/"
-        else
-            echo "Warning: $file not found - skipping"
-        fi
-    done
+read -rp "Copy extra files beyond defaults (INCAR KPOINTS POTCAR)? (y/n): " answer
+EXTRA_ARGS=()
+if [[ $answer =~ ^[Yy]$ ]]; then
+    read -rp "Enter extra file names (space-separated): " -a extra_files
+    EXTRA_ARGS=(--cp "${extra_files[@]}")
+fi
+
+for dir in "${dirs[@]}"; do
+    dir="${dir#./}"
+    echo "Entering directory: $dir"
+    cd "$dir" || { echo "Failed to enter $dir"; exit 1; }
+
+    bash "$SCRIPT_DIR/make_disp_line_arg.sh" "${EXTRA_ARGS[@]+"${EXTRA_ARGS[@]}"}"
+
+    echo "Finished processing $dir"
+    echo "----------------------------------------"
+    cd ..
 done
 
-echo "Done!"
+echo "All directories processed."

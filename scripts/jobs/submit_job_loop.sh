@@ -10,7 +10,7 @@ for dir in */; do
         echo "🔍 Entering directory: $dir"
         cd "$dir" || continue
 
-        sbatch $jobscript
+        sbatch "$jobscript"
 
         echo "✅ Submitted in $dir"
         cd "$og_dir" || exit

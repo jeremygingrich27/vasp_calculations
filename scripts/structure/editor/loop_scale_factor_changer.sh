@@ -16,7 +16,7 @@ for dir in POSCAR_scaled*/; do
         echo "🔍 Entering directory: $dir"
         cd "$dir" || continue
 
-        python ~/scripts/structure/editor/scaling_factor_changer.py "$X" "$Y" "$Z"
+        python3 ~/scripts/structure/editor/change_scaling_factors.py "$X" "$Y" "$Z"
         
         echo "✅ Finished with $dir"
         cd ..

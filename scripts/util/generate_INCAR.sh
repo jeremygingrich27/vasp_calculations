@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Load the template into an array
-TEMPLATE_FILE="~/scripts/util/templates/INCAR.template"
+TEMPLATE_FILE="$HOME/scripts/util/templates/INCAR.template"
 if [[ ! -f "$TEMPLATE_FILE" ]]; then
     echo "Template file '$TEMPLATE_FILE' not found."
     exit 1

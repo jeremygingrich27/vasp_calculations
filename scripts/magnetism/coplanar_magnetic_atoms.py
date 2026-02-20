@@ -28,6 +28,10 @@ import sys, numpy as np
 from pathlib import Path
 import re
 
+# Terminal colors
+GREEN = "\033[32m"
+RESET = "\033[0m"
+
 # ─────────────────────────────────── POSCAR reader ───────────────────────────
 def read_poscar(fname):
     """Return (lattice 3×3 Å, fractional coords N×3, element list)"""
@@ -335,6 +339,4 @@ def main():
 
 # ------------------------------------------------------------------------------
 if __name__ == "__main__":
-    # Simple color defs for final message
-    GREEN = "\033[32m"; RESET = "\033[0m"
     main()

@@ -279,7 +279,7 @@ run_calculation() {
   
   cp "$parent_dir/POSCAR" ./POSCAR
   cp "$parent_dir/POTCAR" ./POTCAR
-  python ~/scripts/structure/editor/change_scaling_factors.py "$x" "$y" "$z"
+  python3 ~/scripts/structure/editor/change_scaling_factors.py "$x" "$y" "$z"
   echo -e "102\n2\n0.03" | vaspkit > /dev/null 2>&1
   cp "$parent_dir/INCAR" ./INCAR
   

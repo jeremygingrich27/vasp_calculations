@@ -42,7 +42,7 @@ for dir in "${dirs[@]}"; do
 
     echo "Submitting job with parameters:"
     echo "  Nodes: $NODES  Cores: $CORES  Queue: $QUEUE  Time: $TIME  Account: $ACCOUNT"
-    bash ~/scripts/phonons/fd_phonons_job_line_arg.sh "${CMD_ARGS[@]}"
+    bash ~/scripts/structure/phonons/fd_phonons_job_line_arg.sh "${CMD_ARGS[@]}"
 
     echo "Finished processing $dir"
     echo "----------------------------------------"

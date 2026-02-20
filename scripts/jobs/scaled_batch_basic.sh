@@ -178,7 +178,7 @@ done
 
 echo "🎉 All calculations finished successfully."
 
-bash ~/scripts/batch_calcs/scaled/data_parser_no_relax.sh
+bash ~/scripts/util/parse_data.sh
 EOF
 
 ###############################################################################
